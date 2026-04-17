@@ -27,13 +27,30 @@ public func recordScreen(destination: String) -> ScreenRecorder {
 
 public func captureRegion(destination: NSURL) -> NSURL {
     let destinationPath = destination.path! as String
-    
+
     let task = Process()
     task.launchPath = "/usr/sbin/screencapture"
-    task.arguments = ["-i", "-r", destinationPath]
+    task.arguments = ["-i", "-r", "-x", destinationPath]
     task.launch()
     task.waitUntilExit()
-    
+
+    return destination
+}
+
+public func captureRect(destination: String, x: Int, y: Int, width: Int, height: Int) -> NSURL {
+    return captureRect(destination: NSURL(fileURLWithPath: destination), x: x, y: y, width: width, height: height)
+}
+
+public func captureRect(destination: NSURL, x: Int, y: Int, width: Int, height: Int) -> NSURL {
+    let destinationPath = destination.path! as String
+    let rectString = "\(x),\(y),\(width),\(height)"
+
+    let task = Process()
+    task.launchPath = "/usr/sbin/screencapture"
+    task.arguments = ["-R", rectString, "-x", destinationPath]
+    task.launch()
+    task.waitUntilExit()
+
     return destination
 }
 
